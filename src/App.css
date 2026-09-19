@@ -808,6 +808,230 @@ nav button b {
   color: white;
   background: var(--coral);
 }
+.composer button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.report-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 7px 9px;
+  border: 1px solid #ecd8d4;
+  border-radius: 8px;
+  color: #b96f62;
+  background: #fff9f7;
+  font-size: 10px;
+}
+.report-trigger:hover {
+  background: #fcece8;
+}
+.report-panel {
+  margin: 0 12px 12px;
+  padding: 16px;
+  border: 1px solid #efd8d2;
+  border-radius: 12px;
+  background: #fff9f7;
+}
+.report-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.report-heading h3 {
+  margin: 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+}
+.report-heading > button {
+  color: #a69b9a;
+  font-size: 20px;
+}
+.report-copy,
+.modal-copy {
+  margin: 7px 0 14px;
+  color: #998686;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.report-panel form {
+  display: grid;
+  gap: 10px;
+}
+.report-panel label,
+.support-modal label,
+.ticket-form label {
+  display: grid;
+  gap: 5px;
+  color: #756d6d;
+  font-size: 10px;
+  font-weight: 700;
+}
+.report-panel select,
+.report-panel textarea,
+.support-modal select,
+.ticket-form input,
+.ticket-form textarea {
+  width: 100%;
+  border: 1px solid #e5ddda;
+  border-radius: 7px;
+  padding: 9px 10px;
+  outline: none;
+  color: var(--ink);
+  background: white;
+  font-size: 11px;
+  resize: vertical;
+}
+.report-panel select:focus,
+.report-panel textarea:focus,
+.support-modal select:focus,
+.ticket-form input:focus,
+.ticket-form textarea:focus {
+  border-color: var(--coral);
+}
+.report-panel .primary-button {
+  justify-self: start;
+  margin-top: 2px;
+  padding: 10px 13px;
+}
+.support-badge {
+  padding: 6px 9px;
+  border-radius: 20px;
+  color: #6f9878;
+  background: #edf6ee;
+  font-size: 10px;
+}
+.support-intro {
+  display: flex;
+  gap: 12px;
+  margin: 34px 0 28px;
+  padding: 15px;
+  border: 1px solid #eaded9;
+  border-radius: 12px;
+  background: #fff8f5;
+}
+.support-intro > span {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  color: var(--coral);
+  background: #fce7e1;
+  font-size: 17px;
+}
+.support-intro strong {
+  font-size: 12px;
+}
+.support-intro p {
+  margin: 3px 0 0;
+  color: #998b89;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.support-view .profile-section-heading {
+  margin-top: 0;
+}
+.support-view .profile-section-heading button {
+  color: var(--coral);
+  font-size: 10px;
+}
+.empty-tickets {
+  display: grid;
+  place-items: center;
+  padding: 37px 15px;
+  border: 1px dashed #ded7d1;
+  border-radius: 12px;
+  color: #9d9591;
+  text-align: center;
+}
+.empty-tickets span {
+  color: #dfaa9c;
+  font-size: 24px;
+}
+.empty-tickets p {
+  margin: 8px 0 3px;
+  font-size: 12px;
+}
+.empty-tickets small {
+  font-size: 10px;
+}
+.ticket-list {
+  display: grid;
+  gap: 9px;
+}
+.ticket-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: white;
+}
+.ticket-row strong {
+  font-size: 11px;
+}
+.ticket-row p {
+  margin: 4px 0 0;
+  color: #a39b9a;
+  font-size: 9px;
+}
+.ticket-status {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  border-radius: 12px;
+  font-size: 9px;
+}
+.ticket-status.open {
+  color: #ad725f;
+  background: #fce9e4;
+}
+.ticket-status.review {
+  color: #7b8a6d;
+  background: #edf3e9;
+}
+.support-new {
+  margin-top: 18px;
+}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(45, 35, 34, 0.3);
+}
+.support-modal {
+  position: relative;
+  width: min(100%, 370px);
+  display: grid;
+  gap: 14px;
+  padding: 25px;
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: 0 20px 50px rgba(48, 36, 33, 0.2);
+}
+.support-modal h2 {
+  margin: -5px 0 0;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 25px;
+}
+.support-modal .primary-button {
+  justify-self: start;
+  margin-top: 2px;
+  padding: 10px 14px;
+}
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  color: #a69b9a;
+  font-size: 22px;
+}
 @media (max-width: 1120px) {
   .app-shell {
     grid-template-columns: 210px minmax(480px, 1fr);

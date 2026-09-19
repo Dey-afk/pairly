@@ -1,7 +1,14 @@
 import { useState } from "react";
 import "./App.css";
 
-type View = "discover" | "matches" | "messages" | "profile" | "lobby" | "setup";
+type View =
+  | "discover"
+  | "matches"
+  | "messages"
+  | "profile"
+  | "lobby"
+  | "setup"
+  | "support";
 type GenderPreference = "Women" | "Men" | "Everyone";
 type OwnGender = "Woman" | "Man" | "Non-binary" | "Prefer not to say";
 type Profile = {
@@ -83,6 +90,13 @@ const chats = [
   },
 ];
 
+type Ticket = {
+  id: string;
+  subject: string;
+  details: string;
+  status: "Open" | "In review";
+};
+
 function Icon({ children }: { children: string }) {
   return (
     <span className="icon" aria-hidden="true">
@@ -101,6 +115,14 @@ function App() {
   const [ownGender, setOwnGender] = useState<OwnGender>("Woman");
   const [revealRequests, setRevealRequests] = useState<string[]>([]);
   const [revealedProfiles, setRevealedProfiles] = useState<string[]>([]);
+  const [draft, setDraft] = useState("");
+  const [sentMessages, setSentMessages] = useState<Record<string, string[]>>(
+    {},
+  );
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState("Something felt unsafe");
+  const [reportDetails, setReportDetails] = useState("");
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const profile = profiles[profileIndex % profiles.length];
   const selectedProfile =
     profiles.find((item) => item.name === selectedChat) ?? profiles[0];
@@ -111,6 +133,32 @@ function App() {
     if (action === "like" && !liked.includes(profile.name))
       setLiked((current) => [...current, profile.name]);
     setProfileIndex((current) => current + 1);
+  };
+  const currentMessages = sentMessages[selectedChat] ?? [];
+  const sendMessage = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const message = draft.trim();
+    if (!message) return;
+    setSentMessages((current) => ({
+      ...current,
+      [selectedChat]: [...(current[selectedChat] ?? []), message],
+    }));
+    setDraft("");
+  };
+  const submitReport = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setTickets((current) => [
+      ...current,
+      {
+        id: `PR-${String(current.length + 104).padStart(4, "0")}`,
+        subject: `Report about ${selectedChat}`,
+        details: reportDetails.trim() || reportReason,
+        status: "Open",
+      },
+    ]);
+    setReportDetails("");
+    setReportOpen(false);
+    setActiveView("support");
   };
 
   function renderContent() {
@@ -497,10 +545,11 @@ function App() {
                 </span>
               </div>
               <button
-                className="round-button"
+                className="report-trigger"
                 aria-label="Conversation details"
+                onClick={() => setReportOpen(true)}
               >
-                <Icon>•••</Icon>
+                <Icon>⚑</Icon> Report
               </button>
             </div>
             <div className="conversation-body">
@@ -515,6 +564,11 @@ function App() {
               <div className="bubble bubble-them">
                 That sounds like a plan ✨
               </div>
+              {currentMessages.map((message, index) => (
+                <div className="bubble bubble-you" key={`${message}-${index}`}>
+                  {message}
+                </div>
+              ))}
             </div>
             {!isProfileRevealed && (
               <div className="reveal-card">
@@ -566,19 +620,133 @@ function App() {
                 </button>
               </div>
             )}
-            <form
-              className="composer"
-              onSubmit={(event) => event.preventDefault()}
-            >
+            <form className="composer" onSubmit={sendMessage}>
               <input
                 aria-label="Write a message"
                 placeholder="Write a message…"
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
               />
-              <button aria-label="Send message">
+              <button aria-label="Send message" disabled={!draft.trim()}>
                 <Icon>↑</Icon>
               </button>
             </form>
+            {reportOpen && (
+              <div className="report-panel">
+                <div className="report-heading">
+                  <div>
+                    <p className="eyebrow">Safety first</p>
+                    <h3>Report this conversation</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setReportOpen(false)}
+                    aria-label="Close report"
+                  >
+                    ×
+                  </button>
+                </div>
+                <p className="report-copy">
+                  Your report is private. We’ll review it and follow up through
+                  your support tickets.
+                </p>
+                <form onSubmit={submitReport}>
+                  <label>
+                    Reason
+                    <select
+                      value={reportReason}
+                      onChange={(event) => setReportReason(event.target.value)}
+                    >
+                      <option>Something felt unsafe</option>
+                      <option>Harassment or unwanted messages</option>
+                      <option>Fake or misleading profile</option>
+                      <option>Spam or scam</option>
+                    </select>
+                  </label>
+                  <label>
+                    More detail{" "}
+                    <textarea
+                      value={reportDetails}
+                      onChange={(event) => setReportDetails(event.target.value)}
+                      placeholder="Tell us what happened (optional)"
+                      rows={3}
+                    />
+                  </label>
+                  <button className="primary-button" type="submit">
+                    Submit report <span>→</span>
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
+        </section>
+      );
+
+    if (activeView === "support")
+      return (
+        <section className="view-panel support-view">
+          <div className="view-heading">
+            <div>
+              <p className="eyebrow">Help when you need it</p>
+              <h1>Support tickets</h1>
+            </div>
+            <span className="support-badge">Private & secure</span>
+          </div>
+          <div className="support-intro">
+            <span>⌑</span>
+            <div>
+              <strong>We’re here to help.</strong>
+              <p>
+                Report a problem, ask a question, or check on a previous
+                request.
+              </p>
+            </div>
+          </div>
+          <div className="ticket-section">
+            <div className="profile-section-heading">
+              <h3>Your tickets</h3>
+              <button onClick={() => setActiveView("messages")}>
+                Back to messages <span>→</span>
+              </button>
+            </div>
+            {tickets.length === 0 ? (
+              <div className="empty-tickets">
+                <span>✦</span>
+                <p>No open tickets yet.</p>
+                <small>
+                  Your reports and support requests will show up here.
+                </small>
+              </div>
+            ) : (
+              <div className="ticket-list">
+                {tickets.map((ticket) => (
+                  <div className="ticket-row" key={ticket.id}>
+                    <div>
+                      <strong>{ticket.subject}</strong>
+                      <p>
+                        {ticket.id} · {ticket.details}
+                      </p>
+                    </div>
+                    <span
+                      className={`ticket-status ${ticket.status === "Open" ? "open" : "review"}`}
+                    >
+                      {ticket.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <button
+            className="primary-button support-new"
+            onClick={() => {
+              setSelectedChat("Sophie");
+              setReportOpen(true);
+              setActiveView("messages");
+            }}
+          >
+            Create a new report <span>→</span>
+          </button>
         </section>
       );
 
@@ -755,9 +923,9 @@ function App() {
             <Icon>◌</Icon>
             <span>My profile</span>
           </button>
-          <button>
+          <button onClick={() => setActiveView("support")}>
             <Icon>?</Icon>
-            <span>Help center</span>
+            <span>Help & tickets</span>
           </button>
           <div className="upgrade">
             <span className="upgrade-icon">✦</span>
