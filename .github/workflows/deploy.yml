@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: Deploy React to GitHub Pages
 
 on:
@@ -40,3 +41,47 @@ jobs:
 
       - name: Deploy
         uses: actions/deploy-pages@v4
+=======
+name: Deploy React to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+      - name: Deploy
+        uses: actions/deploy-pages@v4
+>>>>>>> de109e1f2e4d78c809828f981c40c7a5d91e1095
